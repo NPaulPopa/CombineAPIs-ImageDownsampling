@@ -45,3 +45,4 @@ class NamesViewModel: ObservableObject {
             }.store(in: &cancellables)
     }
 }
+
