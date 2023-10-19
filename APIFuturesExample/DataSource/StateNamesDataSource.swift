@@ -19,10 +19,6 @@ class StateNamesDataSource {
     
     //MARK: Public methods
     
-//    public func requestData() -> Future<[String],Error> {
-//        return stateNamesFuture ?? makeStateNamesFuture()
-//    }
-    
     public func requestData() -> Future<[String],Error> {
             
             if let storedFuture = stateNamesFuture {
