@@ -26,13 +26,10 @@ struct HomeView: View {
                             .frame(maxWidth: .infinity)
                             .frame(height: 400)
                     }
-                    //.padding(20)
                     .background(Color.blue)
                     .cornerRadius(12)
                     .padding(.horizontal, 16)
                     .padding(.vertical,8)
-
-
                 }
             }
             .navigationTitle("Home View")
