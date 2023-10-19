@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 @main
 struct APIFuturesExampleApp: App {
     
@@ -21,32 +20,6 @@ struct APIFuturesExampleApp: App {
         
         WindowGroup {
             TabBarView(viewModel: viewModel,pageView: PageView(viewModel: viewModel))
-           // HomeView(viewModel: viewModel)
-          //  ListView(viewModel: viewModel, pageView: PageView(viewModel: viewModel))
         }
-    }
-}
-
-class CompositionContainer {
-        
-    var viewModel: NamesViewModel
-    
-    init(viewModel: NamesViewModel) {
-        self.viewModel = viewModel
-        
-    }
-    
-    public func makeContentView() -> ListView {
-        let pageView = makePageView()
-
-        return ListView(viewModel: viewModel, pageView: pageView)
-    }
-    
-//    private func makeNamesViewModel() -> NamesViewModel {
-//        return NamesViewModel(dataSource: dataSource)
-//    }
-    
-    private func makePageView() -> PageView {
-        return PageView(viewModel: viewModel)
     }
 }
