@@ -10,6 +10,7 @@ import Combine
 
 struct ListView: View {
     
+    
     @ObservedObject private var viewModel: NamesViewModel
     private let pageView: PageView
 
