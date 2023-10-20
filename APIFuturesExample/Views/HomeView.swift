@@ -19,21 +19,34 @@ struct HomeView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                
-                ForEach(0..<10) { index in
-                    VStack {
-                        Text("Name: \(index)")
+                ForEach(viewModel.images, id: \.self) { image in
+                    LazyVStack {
+                        ZStack {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFill()
+
+                        Text("Hello from image")
                             .frame(maxWidth: .infinity)
                             .frame(height: 400)
+                        }
                     }
-                    .background(Color.blue)
                     .cornerRadius(12)
                     .padding(.horizontal, 16)
                     .padding(.vertical,8)
                 }
             }
+            
             .navigationTitle("Home View")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                Button {
+                    
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .foregroundColor(Color.primary)
+                }
+            }
         }
     }
 }
