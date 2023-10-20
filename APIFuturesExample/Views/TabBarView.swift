@@ -8,21 +8,22 @@
 import SwiftUI
 
 struct TabBarView: View {
-    
-    let viewModel: NamesViewModel
-    let pageView: PageView
+
+    let homeView: HomeView
+    let listView: ListView
     
     var body: some View {
             TabView {
-                HomeView(viewModel: viewModel)
+                homeView
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }
                 
-                ListView(viewModel: viewModel, pageView: pageView)
+                listView
                     .tabItem {
                         Label("List", systemImage: "list.bullet.rectangle.portrait")
                     }
+                
             }.navigationBarTitleDisplayMode(.inline)
         }
 }
@@ -31,8 +32,8 @@ struct TTabBarView_Previews: PreviewProvider {
     static var viewModel = NamesViewModel()
     
     static var previews: some View {
-        TabBarView(
-            viewModel: viewModel,
-            pageView: PageView(viewModel: viewModel))
+        TabBarView(homeView: HomeView(viewModel: viewModel),
+                   listView: ListView(viewModel: viewModel,
+                   pageView: PageView(viewModel: viewModel)))
     }
 }
