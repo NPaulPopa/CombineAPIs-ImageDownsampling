@@ -12,6 +12,8 @@ struct APIFuturesExampleApp: App {
     
     @StateObject var viewModel: NamesViewModel
     
+    let factory =  MainFactory()
+    
     init() {
         _viewModel = StateObject(wrappedValue: NamesViewModel())
     }
@@ -19,7 +21,8 @@ struct APIFuturesExampleApp: App {
     var body: some Scene {
         
         WindowGroup {
-            TabBarView(viewModel: viewModel,pageView: PageView(viewModel: viewModel))
+            TabBarView(homeView: factory.makeHomeView(viewModel: viewModel),
+                       listView: factory.makeListView(viewModel: viewModel))
         }
     }
 }
