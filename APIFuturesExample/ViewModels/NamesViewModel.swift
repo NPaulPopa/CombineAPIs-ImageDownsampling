@@ -11,16 +11,20 @@ import Combine
 class NamesViewModel: ObservableObject {
     
     public var dataSource: StateNamesDataSource
+    public var imageFetcher: PhotoAPIManager
     
     @Published public var stateNames: [String] = []
     @Published public var showError: Bool = false
+    @Published public var images: [UIImage] = []
     
     private var cancellables = Set<AnyCancellable>()
     
     init() {
         dataSource = StateNamesDataSource()
+        imageFetcher = PhotoAPIManager()
+        
         observeStateNames()
-        print("Initialising ViewModel.....")
+        fetchPhotos()
     }
     
     //MARK: - Methods
@@ -44,5 +48,24 @@ class NamesViewModel: ObservableObject {
                 
             }.store(in: &cancellables)
     }
+    
+    private func fetchPhotos() {
+        let imageLinks = (0..<500).reduce([String]()) { result, _ in
+            return result + ["https://picsum.photos/900"]
+        }
+        imageFetcher.fetchUIImages(from: imageLinks)
+            .receive(on: DispatchQueue.main)
+          //  .collect()
+            .sink { completion in
+                switch completion {
+                case .failure(_):
+                    self.showError = true
+                default: break
+                }
+            } receiveValue: { newImages in
+             //   self.images.append(contentsOf: newImages)
+                self.images.append(newImages)
+            }
+            .store(in: &cancellables)
+    }
 }
-
