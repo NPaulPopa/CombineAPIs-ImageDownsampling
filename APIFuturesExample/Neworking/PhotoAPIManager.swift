@@ -46,3 +46,23 @@ class PhotoAPIManager {
 enum NetworkingError: Error {
     case badURL
 }
+
+extension PhotoAPIManager {
+    
+    public func fetchUIImages(from urls: [String]) -> AnyPublisher<UIImage, Never> {
+        let urlPublishers = urls.compactMap { urlString -> AnyPublisher<Data, Error>? in
+            guard let url = try? makeURL(from: urlString) else {
+                return Fail(error: NetworkingError.badURL).eraseToAnyPublisher()
+            }
+            return URLSession.shared.dataTaskPublisher(for: url)
+                .mapError { $0 as Error }
+                .map { $0.data }
+                .eraseToAnyPublisher()
+        }
+        
+        return Publishers.MergeMany(urlPublishers)
+            .compactMap { UIImage(data: $0) }
+            .replaceError(with: UIImage(systemName: "photo.fill")!)
+            .eraseToAnyPublisher()
+    }
+}
