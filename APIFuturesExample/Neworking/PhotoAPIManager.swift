@@ -66,9 +66,25 @@ extension PhotoAPIManager {
             .eraseToAnyPublisher()
     }
     
+    public func getSingleDownsampledImagePublisher(urlString: String) -> AnyPublisher<UIImage,Error> {
+        guard let url = try? makeURL(from: urlString) else {
+            return Fail(error: NetworkingError.badURL).eraseToAnyPublisher()
+        }
+        
+        let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
+        
+        return URLSession.shared.dataTaskPublisher(for: url)
+            .mapError { $0 as Error }
+            .compactMap {
+                let imageSource = CGImageSourceCreateWithData($0.data as CFData, imageSourceOptions)
+                return self.downsample(imageSource: imageSource!)
+            }
+            .eraseToAnyPublisher()
+    }
+    
     //MARK: - Image downsampling
     
-    func downsample(imageSource: CGImageSource, to pointSize: CGSize = CGSize(width: 400, height: 400), scale: CGFloat = 3.0) -> UIImage {
+    private func downsample(imageSource: CGImageSource, to pointSize: CGSize = CGSize(width: 400, height: 400), scale: CGFloat = 3.0) -> UIImage {
      
      let maxDimensionInPixels = max(pointSize.width, pointSize.height) * scale
      let downsampleOptions =
