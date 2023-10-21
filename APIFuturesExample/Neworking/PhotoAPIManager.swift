@@ -65,4 +65,20 @@ extension PhotoAPIManager {
             .replaceError(with: UIImage(systemName: "photo.fill")!)
             .eraseToAnyPublisher()
     }
+    
+    //MARK: - Image downsampling
+    
+    func downsample(imageSource: CGImageSource, to pointSize: CGSize = CGSize(width: 400, height: 400), scale: CGFloat = 3.0) -> UIImage {
+     
+     let maxDimensionInPixels = max(pointSize.width, pointSize.height) * scale
+     let downsampleOptions =
+     [kCGImageSourceCreateThumbnailFromImageAlways: true,
+     kCGImageSourceShouldCacheImmediately: true,
+     kCGImageSourceCreateThumbnailWithTransform: true,
+     kCGImageSourceThumbnailMaxPixelSize: maxDimensionInPixels] as CFDictionary
+     
+     let downsampledImage =
+     CGImageSourceCreateThumbnailAtIndex(imageSource, 0, downsampleOptions)!
+     return UIImage(cgImage: downsampledImage)
+    }
 }
