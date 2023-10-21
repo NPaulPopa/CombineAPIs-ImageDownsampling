@@ -104,6 +104,33 @@ extension PhotoAPIManager {
             .eraseToAnyPublisher()
     }
     
+    func downsampledImagesArrayPublisher(urlPublishers: [AnyPublisher<CGImageSource, Error>]) async -> AnyPublisher<UIImage, Never> {
+        return try! await withThrowingTaskGroup(of: AnyPublisher<UIImage, Never>.self) { group in
+            
+            var imagePublisher: [AnyPublisher<UIImage, Never>] = []
+            
+            for publisher in urlPublishers {
+                group.addTask {
+                    print("We're inside the for loop ....")
+                    return publisher
+                        .mapError { $0 as Error }
+                        .compactMap { self.downsample(imageSource: $0) }
+                        .replaceError(with: UIImage(systemName: "photo.fill")!)
+                        .eraseToAnyPublisher()
+                }
+            }
+            
+            for try await image in group {
+                imagePublisher.append(image.eraseToAnyPublisher())
+            }
+            
+            return Publishers.MergeMany(imagePublisher)
+                .receive(on: DispatchQueue.global(), options: nil)
+                .replaceError(with: UIImage(systemName: "photo.fill")!)
+                .eraseToAnyPublisher()
+        }
+    }
+    
     //MARK: - Image downsampling
     
     private func downsample(imageSource: CGImageSource, to pointSize: CGSize = CGSize(width: 400, height: 400), scale: CGFloat = 3.0) -> UIImage {
